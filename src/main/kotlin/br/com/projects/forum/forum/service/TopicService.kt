@@ -1,33 +1,53 @@
 package br.com.projects.forum.forum.service
 
-import br.com.projects.forum.forum.dto.NewTopicDTO
+import br.com.projects.forum.forum.dto.NewTopicForm
+import br.com.projects.forum.forum.dto.TopicDTO
+import br.com.projects.forum.forum.dto.UpdateTopicForm
+import br.com.projects.forum.forum.mapper.TopicFormMapper
+import br.com.projects.forum.forum.mapper.TopicoDtoMapper
 import br.com.projects.forum.forum.model.Topic
 import org.springframework.stereotype.Service
+import java.util.stream.Collectors
 
 @Service
 class TopicService(
     private var topics: List<Topic> = ArrayList(),
-    private val courseService: CourseService,
-    private val userService: UserService
+    private val topicoDtoMapper: TopicoDtoMapper,
+    private val topicFormMapper: TopicFormMapper
     ) {
 
-    fun list(): List<Topic> =
-        topics
+    fun list(): List<TopicDTO> =
+        topics.stream().map { topicoDtoMapper.map(it) }.collect(Collectors.toList())
 
-    fun findById(id: Long)=
-        topics.stream().filter { it.id == id }.findFirst().get()
-
-    fun register(dto: NewTopicDTO) {
-        topics = topics.plus(
-            Topic(
-                id = topics.size.toLong() + 1,
-                title = dto.title,
-                message = dto.message,
-                course = courseService.findById(dto.courseId),
-                author = userService.findById(dto.authorId)
-            )
+    fun findById(id: Long): TopicDTO {
+        return topicoDtoMapper.map(
+            topics.stream().filter { it.id == id }.findFirst().get()
         )
     }
 
+    fun register(form: NewTopicForm) {
+        val topic = topicFormMapper.map(form)
+        topic.id = topics.size.toLong() + 1
+        topics = topics.plus(topic)
+    }
+
+    fun update(form: UpdateTopicForm){
+        val topic = topics.stream().filter { it.id == form.id }.findFirst().get()
+        topics = topics.minus(topic).plus(Topic(
+            id = form.id,
+            title = form.title,
+            message = form.message,
+            author = topic.author,
+            course = topic.course,
+            responses = topic.responses,
+            status = topic.status,
+            creationDate = topic.creationDate
+        ))
+    }
+
+    fun delete(id: Long) {
+        val topic = topics.stream().filter { it.id == id }.findFirst().get()
+        topics = topics.minus(topic)
+    }
 
 }
