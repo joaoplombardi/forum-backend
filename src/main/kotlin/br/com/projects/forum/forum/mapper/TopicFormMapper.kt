@@ -11,12 +11,12 @@ class TopicFormMapper(
     private val courseService: CourseService,
     private val userService: UserService
     ): Mapper<NewTopicForm, Topic> {
-    override fun map(topic: NewTopicForm): Topic {
+    override fun map(t: NewTopicForm): Topic {
         return Topic(
-            title = topic.title,
-            message = topic.message,
-            course = courseService.findById(topic.courseId),
-            author = userService.findById(topic.authorId)
+            title = t.title,
+            message = t.message,
+            course = courseService.findById(t.courseId),
+            author = userService.findById(t.authorId)
         )
     }
 }

@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component
 
 @Component
 class TopicoDtoMapper: Mapper<Topic, TopicDTO> {
-    override fun map(topic: Topic): TopicDTO {
+    override fun map(t: Topic): TopicDTO {
         return TopicDTO(
-            id = topic.id,
-            title = topic.title,
-            message = topic.message,
-            creationDate = topic.creationDate,
-            status = topic.status
+            id = t.id,
+            title = t.title,
+            message = t.message,
+            creationDate = t.creationDate,
+            status = t.status
         )
     }
 }
