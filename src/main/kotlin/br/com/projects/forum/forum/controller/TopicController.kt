@@ -1,5 +1,6 @@
 package br.com.projects.forum.forum.controller
 
+import br.com.projects.forum.forum.dto.NewTopicDTO
 import br.com.projects.forum.forum.model.*
 import br.com.projects.forum.forum.service.TopicService
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,7 +23,7 @@ class TopicController(private val service: TopicService) {
         service.findById(id)
 
     @PostMapping
-    fun register(@RequestBody topic: Topic) =
-        service.register(topic)
+    fun register(@RequestBody dto: NewTopicDTO) =
+        service.register(dto)
 
 }
