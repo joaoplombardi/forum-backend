@@ -3,6 +3,7 @@ package br.com.projects.forum.forum.service
 import br.com.projects.forum.forum.dto.NewTopicForm
 import br.com.projects.forum.forum.dto.TopicDTO
 import br.com.projects.forum.forum.dto.UpdateTopicForm
+import br.com.projects.forum.forum.exception.NotFoundException
 import br.com.projects.forum.forum.mapper.TopicFormMapper
 import br.com.projects.forum.forum.mapper.TopicDtoMapper
 import br.com.projects.forum.forum.model.Topic
@@ -13,7 +14,8 @@ import java.util.stream.Collectors
 class TopicService(
     private var topics: List<Topic> = ArrayList(),
     private val topicDtoMapper: TopicDtoMapper,
-    private val topicFormMapper: TopicFormMapper
+    private val topicFormMapper: TopicFormMapper,
+    private val notFoundMessage: String = "Topic not found!"
     ) {
 
     fun list(): List<TopicDTO> =
@@ -21,7 +23,7 @@ class TopicService(
 
     fun findById(id: Long): TopicDTO {
         return topicDtoMapper.map(
-            topics.stream().filter { it.id == id }.findFirst().get()
+            topics.stream().filter { it.id == id }.findFirst().orElseThrow{NotFoundException(notFoundMessage)}
         )
     }
 
@@ -33,7 +35,7 @@ class TopicService(
     }
 
     fun update(form: UpdateTopicForm): TopicDTO{
-        val topic = topics.stream().filter { it.id == form.id }.findFirst().get()
+        val topic = topics.stream().filter { it.id == form.id }.findFirst().orElseThrow{NotFoundException(notFoundMessage)}
         val topicUpdated = Topic(
             id = form.id,
             title = form.title,
@@ -49,7 +51,7 @@ class TopicService(
     }
 
     fun delete(id: Long) {
-        val topic = topics.stream().filter { it.id == id }.findFirst().get()
+        val topic = topics.stream().filter { it.id == id }.findFirst().orElseThrow{NotFoundException(notFoundMessage)}
         topics = topics.minus(topic)
     }
 
