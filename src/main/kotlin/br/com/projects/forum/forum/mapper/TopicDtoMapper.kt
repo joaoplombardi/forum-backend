@@ -5,7 +5,7 @@ import br.com.projects.forum.forum.model.Topic
 import org.springframework.stereotype.Component
 
 @Component
-class TopicoDtoMapper: Mapper<Topic, TopicDTO> {
+class TopicDtoMapper: Mapper<Topic, TopicDTO> {
     override fun map(t: Topic): TopicDTO {
         return TopicDTO(
             id = t.id,
