@@ -7,52 +7,42 @@ import br.com.projects.forum.forum.exception.NotFoundException
 import br.com.projects.forum.forum.mapper.TopicFormMapper
 import br.com.projects.forum.forum.mapper.TopicDtoMapper
 import br.com.projects.forum.forum.model.Topic
+import br.com.projects.forum.forum.repository.TopicRepository
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
 @Service
 class TopicService(
-    private var topics: List<Topic> = ArrayList(),
+    private val repository: TopicRepository,
     private val topicDtoMapper: TopicDtoMapper,
     private val topicFormMapper: TopicFormMapper,
     private val notFoundMessage: String = "Topic not found!"
     ) {
 
     fun list(): List<TopicDTO> =
-        topics.stream().map { topicDtoMapper.map(it) }.collect(Collectors.toList())
+        repository.findAll().stream().map { topicDtoMapper.map(it) }.collect(Collectors.toList())
 
     fun findById(id: Long): TopicDTO {
         return topicDtoMapper.map(
-            topics.stream().filter { it.id == id }.findFirst().orElseThrow{NotFoundException(notFoundMessage)}
+            repository.findById(id).orElseThrow{NotFoundException(notFoundMessage)}
         )
     }
 
     fun register(form: NewTopicForm): TopicDTO {
         val topic = topicFormMapper.map(form)
-        topic.id = topics.size.toLong() + 1
-        topics = topics.plus(topic)
+        repository.save(topic)
         return topicDtoMapper.map(topic)
     }
 
     fun update(form: UpdateTopicForm): TopicDTO{
-        val topic = topics.stream().filter { it.id == form.id }.findFirst().orElseThrow{NotFoundException(notFoundMessage)}
-        val topicUpdated = Topic(
-            id = form.id,
-            title = form.title,
-            message = form.message,
-            author = topic.author,
-            course = topic.course,
-            responses = topic.responses,
-            status = topic.status,
-            creationDate = topic.creationDate
-        )
-        topics = topics.minus(topic).plus(topicUpdated)
-        return topicDtoMapper.map(topicUpdated)
+        val topic = repository.findById(form.id).orElseThrow{NotFoundException(notFoundMessage)}
+        topic.title = form.title
+        topic.message = form.message
+        return topicDtoMapper.map(topic)
     }
 
     fun delete(id: Long) {
-        val topic = topics.stream().filter { it.id == id }.findFirst().orElseThrow{NotFoundException(notFoundMessage)}
-        topics = topics.minus(topic)
+        repository.deleteById(id)
     }
 
 }
