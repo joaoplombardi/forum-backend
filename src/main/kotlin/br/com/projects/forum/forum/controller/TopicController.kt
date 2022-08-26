@@ -6,6 +6,7 @@ import br.com.projects.forum.forum.dto.UpdateTopicForm
 import br.com.projects.forum.forum.service.TopicService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -31,6 +32,7 @@ class TopicController(private val service: TopicService) {
         service.findById(id)
 
     @PostMapping
+    @Transactional
     fun register(
         @RequestBody @Valid dto: NewTopicForm,
         uriBuilder: UriComponentsBuilder
@@ -41,6 +43,7 @@ class TopicController(private val service: TopicService) {
     }
 
     @PutMapping
+    @Transactional
     fun update(@RequestBody @Valid form: UpdateTopicForm): ResponseEntity<TopicDTO>{
         val topicDto = service.update(form)
         return ResponseEntity.ok(topicDto)
@@ -49,6 +52,7 @@ class TopicController(private val service: TopicService) {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
     fun delete(@PathVariable id: Long){
         service.delete(id)
     }
