@@ -6,8 +6,9 @@ import br.com.projects.forum.forum.dto.UpdateTopicForm
 import br.com.projects.forum.forum.exception.NotFoundException
 import br.com.projects.forum.forum.mapper.TopicFormMapper
 import br.com.projects.forum.forum.mapper.TopicDtoMapper
-import br.com.projects.forum.forum.model.Topic
 import br.com.projects.forum.forum.repository.TopicRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
@@ -19,8 +20,21 @@ class TopicService(
     private val notFoundMessage: String = "Topic not found!"
     ) {
 
-    fun list(): List<TopicDTO> =
-        repository.findAll().stream().map { topicDtoMapper.map(it) }.collect(Collectors.toList())
+    fun list(
+        courseName: String?,
+        pagination: Pageable
+    ): Page<TopicDTO> {
+        val topics = if (courseName.isNullOrEmpty()) {
+            repository.findAll(pagination)
+        } else {
+            repository.findByCourseName(courseName, pagination)
+        }
+
+        println(pagination)
+
+        return topics.map { topicDtoMapper.map(it) }
+    }
+
 
     fun findById(id: Long): TopicDTO {
         return topicDtoMapper.map(
