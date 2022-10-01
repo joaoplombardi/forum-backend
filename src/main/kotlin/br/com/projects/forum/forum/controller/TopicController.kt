@@ -1,6 +1,7 @@
 package br.com.projects.forum.forum.controller
 
 import br.com.projects.forum.forum.dto.NewTopicForm
+import br.com.projects.forum.forum.dto.TopicByCategoryDto
 import br.com.projects.forum.forum.dto.TopicDTO
 import br.com.projects.forum.forum.dto.UpdateTopicForm
 import br.com.projects.forum.forum.service.TopicService
@@ -70,6 +71,11 @@ class TopicController(private val service: TopicService) {
     @CacheEvict(value = ["topics"], allEntries = true)
     fun delete(@PathVariable id: Long){
         service.delete(id)
+    }
+
+    @GetMapping("/report")
+    fun report(): List<TopicByCategoryDto> {
+        return service.report()
     }
 
 
