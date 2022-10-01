@@ -1,6 +1,7 @@
 package br.com.projects.forum.forum.service
 
 import br.com.projects.forum.forum.dto.NewTopicForm
+import br.com.projects.forum.forum.dto.TopicByCategoryDto
 import br.com.projects.forum.forum.dto.TopicDTO
 import br.com.projects.forum.forum.dto.UpdateTopicForm
 import br.com.projects.forum.forum.exception.NotFoundException
@@ -57,6 +58,10 @@ class TopicService(
 
     fun delete(id: Long) {
         repository.deleteById(id)
+    }
+
+    fun report(): List<TopicByCategoryDto> {
+        return repository.report()
     }
 
 }
