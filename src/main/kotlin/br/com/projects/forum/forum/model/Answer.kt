@@ -8,12 +8,12 @@ import javax.persistence.Id
 import javax.persistence.ManyToOne
 
 @Entity
-data class Resposta(
+data class Answer(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     val message: String,
-    val criationDate: LocalDateTime = LocalDateTime.now(),
+    val creationDate: LocalDateTime = LocalDateTime.now(),
     @ManyToOne
     val author: User,
     @ManyToOne
