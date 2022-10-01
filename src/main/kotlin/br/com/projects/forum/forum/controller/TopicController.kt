@@ -4,6 +4,8 @@ import br.com.projects.forum.forum.dto.NewTopicForm
 import br.com.projects.forum.forum.dto.TopicDTO
 import br.com.projects.forum.forum.dto.UpdateTopicForm
 import br.com.projects.forum.forum.service.TopicService
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -29,6 +31,7 @@ import javax.validation.Valid
 class TopicController(private val service: TopicService) {
 
     @GetMapping
+    @Cacheable("topics")
     fun list(
         @RequestParam(required = false) courseName: String?,
         @PageableDefault(size = 5, sort = ["creationDate"], direction = Sort.Direction.DESC) pagination: Pageable
@@ -42,6 +45,7 @@ class TopicController(private val service: TopicService) {
 
     @PostMapping
     @Transactional
+    @CacheEvict(value = ["topics"], allEntries = true)
     fun register(
         @RequestBody @Valid dto: NewTopicForm,
         uriBuilder: UriComponentsBuilder
@@ -53,6 +57,7 @@ class TopicController(private val service: TopicService) {
 
     @PutMapping
     @Transactional
+    @CacheEvict(value = ["topics"], allEntries = true)
     fun update(@RequestBody @Valid form: UpdateTopicForm): ResponseEntity<TopicDTO>{
         val topicDto = service.update(form)
         return ResponseEntity.ok(topicDto)
@@ -62,6 +67,7 @@ class TopicController(private val service: TopicService) {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
+    @CacheEvict(value = ["topics"], allEntries = true)
     fun delete(@PathVariable id: Long){
         service.delete(id)
     }
