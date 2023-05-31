@@ -1,9 +1,6 @@
 package br.com.projects.forum.forum.controller
 
-import br.com.projects.forum.forum.dto.NewTopicForm
-import br.com.projects.forum.forum.dto.TopicByCategoryDto
-import br.com.projects.forum.forum.dto.TopicDTO
-import br.com.projects.forum.forum.dto.UpdateTopicForm
+import br.com.projects.forum.forum.dto.*
 import br.com.projects.forum.forum.service.TopicService
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
@@ -77,6 +74,10 @@ class TopicController(private val service: TopicService) {
     fun report(): List<TopicByCategoryDto> {
         return service.report()
     }
+
+    @PostMapping("/sonia")
+    fun relatorioDaSonia(@RequestBody form: SoniaForm)
+        = service.generateTaxesReport(form)
 
 
 }

@@ -1,12 +1,10 @@
 package br.com.projects.forum.forum.service
 
-import br.com.projects.forum.forum.dto.NewTopicForm
-import br.com.projects.forum.forum.dto.TopicByCategoryDto
-import br.com.projects.forum.forum.dto.TopicDTO
-import br.com.projects.forum.forum.dto.UpdateTopicForm
+import br.com.projects.forum.forum.dto.*
 import br.com.projects.forum.forum.exception.NotFoundException
 import br.com.projects.forum.forum.mapper.TopicFormMapper
 import br.com.projects.forum.forum.mapper.TopicDtoMapper
+import br.com.projects.forum.forum.model.TaxAndQuantity
 import br.com.projects.forum.forum.repository.TopicRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -62,6 +60,17 @@ class TopicService(
 
     fun report(): List<TopicByCategoryDto> {
         return repository.report()
+    }
+
+    fun generateTaxesReport(form: SoniaForm): SoniaDto {
+        val uniqueValues = form.taxesList.toSet()
+        val dto = SoniaDto(mutableListOf())
+
+        uniqueValues.forEach { key ->
+            dto.result.add(TaxAndQuantity(key, form.taxesList.count { it == key}))
+        }
+
+        return dto
     }
 
 }
