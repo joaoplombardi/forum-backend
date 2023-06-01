@@ -30,6 +30,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	runtimeOnly("com.h2database:h2")
 	implementation("org.flywaydb:flyway-core")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
 }
 
 tasks.withType<KotlinCompile> {
