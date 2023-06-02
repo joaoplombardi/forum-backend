@@ -14,4 +14,4 @@ spring:
     console:
       enable: true
 jwt:
-  secret: secreto
+  secret: umafrasealeatoriaparagerarumaachavedesegurancabemgrandepararodaroprojetotestestestestestestestesteste
